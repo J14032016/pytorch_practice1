@@ -41,3 +41,4 @@ class Net(nn.Module):
 
 net = Net()
 print(net)
+print('test')

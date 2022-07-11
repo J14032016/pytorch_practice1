@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# @File  : test.py
+# @File  : neural networks tutorial.py
 # @Author: Changhui Jiang
-# @Date  :  2022/07/08 12:59
+# @Date  :  2022/07/11 14:48
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -42,10 +42,31 @@ class Net(nn.Module):
 net = Net()
 print(net)
 
+params = list(net.parameters())
+print(len(params))
+print(params[0].size())  # conv1's .weight
 
-def num_flat_features(self, x):
-    size = x.size()[1:]  # all dimensions except the batch dimension
-    num_features = 1
-    for s in size:
-        num_features *= s
-    return num_features
+input = torch.randn(1, 1, 32, 32)
+out = net(input)
+print(out)
+
+net.zero_grad()
+out.backward(torch.randn(1, 10))
+
+output = net(input)
+target = torch.randn(10)  # 随机值作为样例
+target = target.view(1, -1)  # 使target和output的shape相同
+criterion = nn.MSELoss()
+
+loss = criterion(output, target)
+print(loss)
+
+net.zero_grad()     # 清除梯度
+
+print('conv1.bias.grad before backward')
+print(net.conv1.bias.grad)
+
+loss.backward()
+
+print('conv1.bias.grad after backward')
+print(net.conv1.bias.grad)
